@@ -1,0 +1,13 @@
+{
+  "name": "logseq-orbitals",
+  "version": "1.1.0",
+  "description": "Orbitals — Kanban, Project table and Calendar views for your Logseq tasks, plus Gmail → task capture",
+  "main": "index.html",
+  "author": "yfhuang7",
+  "license": "MIT",
+  "logseq": {
+    "id": "logseq-orbitals",
+    "title": "Orbitals",
+    "icon": "./icon.svg"
+  }
+}
