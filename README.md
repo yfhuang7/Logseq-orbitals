@@ -23,6 +23,7 @@ Adds a **◉ button to Logseq's toolbar** that opens a board over your *existing
   - Either way, add subtasks the Logseq way: indent lines under the task (`TODO chase them next week`, etc.).
 
 ## Install (~2 minutes, no coding)
+From the Marketplace (easiest): in Logseq, ⋯ (top-right) → Plugins → Marketplace → search Orbitals → Install.
 
 1. In Logseq: **⋯ (top-right) → Settings → Advanced → turn ON "Developer mode"**.
 2. **⋯ → Plugins → Load unpacked plugin**.
@@ -62,12 +63,9 @@ From then on: label an email `logseq` → open the board → it's a task. ("Anyo
 
 ## Notes & limits
 
-- Works on desktop Logseq (plugins aren't supported in the mobile app).
+- Works on desktop Logseq.
 - Uses your normal markers, so it plays nicely with Logseq's own queries, repeated tasks, and the journal.
 - If you use the NOW/LATER workflow, those markers appear in the Doing/To Do lanes; moving a card writes TODO/DOING/WAITING/DONE.
-- The Done column shows the 25 most recent to stay fast on big graphs.
+- The Done column shows the 5 most recent to stay fast on big graphs.
 - Requires internet on first launch after Logseq restarts (the plugin library loads from a CDN). Ask Claude to bundle it offline if that ever bothers you.
 
-## Changing it
-
-The whole plugin is one file, `index.html`. Open a Claude/Cowork session on this folder and describe what you want — e.g. "add a CANCELED lane" or "show the [#A] priority on cards".
