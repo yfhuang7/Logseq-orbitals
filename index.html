@@ -191,8 +191,11 @@ async function refresh(){
         pageName=pageCache[b.page.id];
       }
     }catch(e){}
-    const prm=content.match(/\[\[([^\]\/\n]+\/[^\]\n]+)\]\]/); // Tana-style: task links to [[type/name]]
-    tasks.push({uuid,marker,lane:laneOf(marker),title:title||"(untitled)",page:pageName||"(no page)",projRef:prm?prm[1]:"",gmailLink,raw:content.toLowerCase(),
+    let projRef=""; // Tana-style: first [[type/name]] link whose prefix looks like a real type
+    for(const mref of content.matchAll(/\[\[([^\]\n]+\/[^\]\n]+)\]\]/g)){
+      if(/^[^\s@\/]{1,24}$/.test(mref[1].split("/")[0])){ projRef=mref[1]; break; }
+    }
+    tasks.push({uuid,marker,lane:laneOf(marker),title:title||"(untitled)",page:pageName||"(no page)",projRef,gmailLink,raw:content.toLowerCase(),
       date:(dl&&dl[1])||(sch&&sch[1])||"",time:ttime,isDeadline:!!dl,isEmail:!!gmailLink||/#email\b/i.test(content)});
   }
   // page metadata (properties + journal/template flags) for filters and the Project table
@@ -221,7 +224,7 @@ async function refresh(){
     const all=await logseq.Editor.getAllPages();
     (all||[]).forEach(p=>{
       const name=p.originalName||p.name;
-      if(!name||name.indexOf("/")<0) return;
+      if(!name||!NS_RE.test(name)) return;
       if(p["journal?"]||p.journalDay) return;
       const props=p.properties||{};
       if(props.template) return;
@@ -248,7 +251,7 @@ function allStatuses(){
   return [...new Set(tasks.map(t=>pageStatus(projKey(t))).filter(Boolean))].sort();
 }
 /* the “project” a task belongs to: its page if namespaced (type/name), else the first [[type/name]] link in it, else its page */
-function projOf(t){ return /^[^\/]+\//.test(t.page) ? t.page : (t.projRef||t.page); }
+function projOf(t){ return NS_RE.test(t.page) ? t.page : (t.projRef||t.page); }
 function projKey(t){ const p=projOf(t); return projCanon[p.toLowerCase()]||p; } // case-insensitive canonical name
 function ft(){
   let r=tasks;
@@ -495,7 +498,7 @@ function namespaces(){
   // Tana-style “supertags”: every page named <type>/<name> defines a type tab (project/, manuscript/, proposal/, …)
   const set={};
   const add=key=>{
-    const mm=key.match(/^([^\/]+)\//); if(!mm) return;
+    const mm=key.match(/^([^\/]+)\//); if(!mm||!isType(mm[1])) return;
     const meta=metaOf(key);
     if(meta.journal||meta.template) return;
     set[mm[1].toLowerCase()]=true;
@@ -505,6 +508,19 @@ function namespaces(){
   return Object.keys(set).sort();
 }
 const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+/* what counts as a “type” prefix: one short word — no spaces, no @ (filters out paper titles etc. that merely contain a slash) */
+const NS_SEG=/^[^\s@\/]{1,24}$/;
+const NS_RE=/^[^\s@\/]{1,24}\//;
+function allowedTypes(){
+  const s=((logseq.settings&&logseq.settings.nsTypes)||"").trim();
+  if(!s) return null;
+  return new Set(s.split(",").map(x=>x.trim().toLowerCase()).filter(Boolean));
+}
+function isType(prefix){
+  if(!NS_SEG.test(prefix)) return false;
+  const al=allowedTypes();
+  return al?al.has(prefix.toLowerCase()):true;
+}
 /* ---- user-reorderable table columns (order saved per table in plugin settings) ---- */
 function colOrders(){ try{ return JSON.parse((logseq.settings&&logseq.settings.colOrder)||"{}"); }catch(e){ return {}; } }
 function applyColOrder(cols,tableKey){
@@ -860,7 +876,9 @@ function wire(m){
 function main(){
   logseq.useSettingsSchema([
     {key:"bridgeUrl",type:"string",default:"",title:"Gmail bridge URL",
-     description:"Apps Script web-app URL including ?key=… (see README → Connect Gmail). Emails labeled “logseq” are imported automatically when the board opens."}
+     description:"Apps Script web-app URL including ?key=… (see README → Connect Gmail). Emails labeled “logseq” are imported automatically when the board opens."},
+    {key:"nsTypes",type:"string",default:"",title:"Table types (optional)",
+     description:"Comma-separated page-name prefixes to show as Table tabs, e.g.: project, proposal, area. Leave empty to auto-detect every single-word prefix."}
   ]);
   logseq.provideModel({
     async showOrbitals(){

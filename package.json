@@ -1,9 +1,10 @@
 {
   "name": "logseq-orbitals",
-  "version": "1.1.0",
-  "description": "Orbitals — Kanban, Project table and Calendar views for your Logseq tasks, plus Gmail → task capture",
+  "version": "1.2.1",
+  "description": "Orbitals — Kanban, weekly planner, Tana-style project tables and calendar for your Logseq tasks, plus Gmail → task capture and Google Calendar overlay",
   "main": "index.html",
   "author": "yfhuang7",
+  "repository": "https://github.com/yfhuang7/logseq-orbitals",
   "license": "MIT",
   "logseq": {
     "id": "logseq-orbitals",
