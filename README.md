@@ -2,7 +2,7 @@
 
 *by yfhuang7* · If Orbitals makes your day smoother, you can [☕ buy me a coffee](https://buymeacoffee.com/yufenasyourfriend)!
 
-![Orbitals board](screenshot.png)
+![Orbitals board](screenshot.gif)
 
 Adds a **◉ button to Logseq's toolbar** that opens a board over your *existing* Logseq tasks — no separate database. Anything you mark `TODO`, `DOING`, `NOW`, `LATER`, `WAITING`, or `DONE` anywhere in your graph shows up automatically.
 
