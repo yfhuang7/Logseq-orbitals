@@ -1,6 +1,6 @@
 {
   "name": "logseq-orbitals",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Orbitals — Kanban, weekly planner, Tana-style project tables and calendar for your Logseq tasks, plus Gmail → task capture and Google Calendar overlay",
   "main": "index.html",
   "author": "yfhuang7",

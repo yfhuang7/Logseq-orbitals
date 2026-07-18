@@ -159,6 +159,7 @@ let projectFilter=null, statusFilter=null, tblMode="projects", pSortKey="total",
 const now=new Date(); calY=now.getFullYear(); calM=now.getMonth();
 const pageCache={}; let pageMeta={}, projCanon={}, allNsPages=[];
 const metaOf=pn=>pageMeta[(pn||"").toLowerCase()]||{};
+const hasTmplProp=props=>Object.keys(props||{}).some(k=>k.toLowerCase()==="template");
 
 const esc=s=>String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const laneOf=m=>{ const l=LANES.find(l=>l[2].includes(m)); return l?l[0]:"todo"; };
@@ -210,7 +211,7 @@ async function refresh(){
       nm[k]={props,
         journal:!!(p&&(p["journal?"]||p.journalDay))||(nm[k]&&nm[k].journal)||false,
         jday:(p&&p.journalDay)||(nm[k]&&nm[k].jday)||null,
-        template:!!props.template||/(^|\/)templates?$/i.test(pn)};
+        template:hasTmplProp(props)||/(^|\/)templates?$/i.test(pn)};
     }catch(e){ if(!nm[k]) nm[k]={props:{},journal:false,jday:null,template:false}; }
   }
   pageMeta=nm;
@@ -227,13 +228,23 @@ async function refresh(){
       if(!name||!NS_RE.test(name)) return;
       if(p["journal?"]||p.journalDay) return;
       const props=p.properties||{};
-      if(props.template) return;
+      if(hasTmplProp(props)) return;
       const k=name.toLowerCase();
       if(!pageMeta[k]) pageMeta[k]={props,journal:false,jday:null,template:false};
       if(!projCanon[k]) projCanon[k]=name;
       allNsPages.push(name);
     });
   }catch(e){ console.error("getAllPages failed",e); }
+  // pages that CONTAIN a template block are template pages too — their TODOs are boilerplate, not real tasks
+  try{
+    const tp=await logseq.DB.datascriptQuery('[:find ?name :where [?b :block/properties ?p] (or [(get ?p :template)] [(get ?p :Template)] [(get ?p :TEMPLATE)]) [?b :block/page ?pg] [?pg :block/name ?name]]');
+    (tp||[]).forEach(r=>{
+      const k=String(r[0]).toLowerCase();
+      if(pageMeta[k]) pageMeta[k].template=true;
+      else pageMeta[k]={props:{},journal:false,jday:null,template:true};
+    });
+  }catch(e){}
+  tasks=tasks.filter(t=>!metaOf(t.page).template);
   // tasks on a journal page inherit that day as their date (like Agenda)
   tasks.forEach(t=>{
     const md=metaOf(t.page);
@@ -586,6 +597,8 @@ function drawProjects(m,subtabs,ns){
       pct:total?Math.round(done/total*100):0,next:upcoming,overdue,
       props:metaOf(name).props||{},emails:ts.filter(t=>t.isEmail).length};
   });
+  // leaf pages only: hide an empty intermediate level (proposal/CIROH) when deeper pages exist (proposal/CIROH/FY24)
+  rows=rows.filter(r=>r.total>0 || !rows.some(o=>o!==r && o.name.toLowerCase().startsWith(r.name.toLowerCase()+"/")));
   // one column per metadata property found on ANY page of this type (no cap)
   const propKeys=[...new Set(rows.flatMap(r=>Object.keys(r.props).filter(k=>!SKIP.includes(k))))];
   rows.sort((a,b)=>{

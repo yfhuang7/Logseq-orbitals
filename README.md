@@ -8,27 +8,30 @@ Adds a **◉ button to Logseq's toolbar** that opens a board over your *existing
 
 ## The four views
 
-- **Kanban** — columns To Do / Doing / Waiting (no Done column keeping things tidy — finish a task via its dropdown → DONE; completed tasks remain in Table → All tasks). Drag a card and the plugin rewrites the keyword in your actual note. Click a card title to jump to that block in Logseq.
-- **Table** — works like Tana supertags, driven by page-name prefixes:
+- **📋 Kanban** — columns To Do / Doing / Waiting / Done (the Done column shows only the 5 most recent to stay tidy; the full history lives in Table → All tasks). Drag a card and the plugin rewrites the keyword in your actual note. Click a card title to jump to that block in Logseq.
+- **▦ Table** — works like Tana supertags, driven by page-name prefixes:
   - **A tab per type, auto-detected**: every namespaced page in your graph — `project/…`, `area/…`, `resources/…`, `archive/…`, anything — gets a tab for its type and a row in it, **even with zero tasks** (a page directory, like Tana's supertag views). A task counts toward a project **either** by living on that page **or** by linking to it — writing `TODO draft agenda [[project/Sept Event]]` on your journal works exactly like Tana tagging. Columns: To Do / Doing / Waiting / Done counts, % done progress bar, next upcoming date, overdue count — and **each page property gets its own sortable column** (add `client:: Acme`, `status:: active`, `deadline-journal:: …` at the top of the page). Click a name to open its page; **📋 Board** filters the Kanban to it.
   - **☑ All tasks**: every task in a sortable flat table.
 - **Filters** — Kanban, Calendar and both tables share a collapsible **🔍 Filter** button. Expand it to filter two ways, separately or combined:
   - **By project** — pick one project's tasks. Journal (daily) pages and template pages are excluded from the list to keep it short.
   - **By project status** — pick a `status::` value (e.g. `active`, `on-hold`) and you see only tasks/projects whose page has that status. Set it once per project page: first line `status:: active`. Choosing a status also narrows the project list to matching projects.
-- **Calendar** — shows more than scheduled tasks: TODOs written on a **journal page** appear on that day automatically, and an **📥 Unscheduled TODOs** panel (collapsible) lists every open task with no date so nothing slips through. Opens on a **weekly task planner** (like Agenda's Tasks view): a column per day with a progress bar, tick-to-complete checkboxes (done tasks strike through and drop to the bottom), and a **＋ Add a task** box per day — new tasks land on that day's journal page with a `SCHEDULED:` date, so they show in Logseq and the Agenda plugin too. Toggle to a **Month** grid anytime. Tasks appear on their `SCHEDULED:`/`DEADLINE:` date (⚑ = deadline); with the Google bridge connected, your **Google Calendar events** appear in both views (green outlined 🗓 chips with start times; next 6 weeks, read-only).
-- **Discuss** — Tana-style meeting prep. While working, tag anything you want to raise with someone: `TODO ask about budget [[Jane]] #discuss`. Before the meeting, open Discuss and type `Jane` — every open task mentioning her is listed (💬 #discuss ones first). Tick what to cover → **Create meeting note** adds a `Meeting with [[Jane]] #meeting` block to **today's journal page** with the topics on top as block references, so checking one off during the meeting updates the original task everywhere.
-- **Email → Task** — two ways:
+- **📅 Calendar** — shows more than scheduled tasks: TODOs written on a **journal page** appear on that day automatically, and an **📥 Unscheduled TODOs** panel (collapsible) lists every open task with no date so nothing slips through. Opens on a **weekly task planner** (like Agenda's Tasks view): a column per day with a progress bar, tick-to-complete checkboxes (done tasks strike through and drop to the bottom), and a **＋ Add a task** box per day — new tasks land on that day's journal page with a `SCHEDULED:` date, so they show in Logseq and the Agenda plugin too. Toggle to a **Month** grid anytime. Tasks appear on their `SCHEDULED:`/`DEADLINE:` date (⚑ = deadline); with the Google bridge connected, your **Google Calendar events** appear in both views (green outlined 🗓 chips with start times; next 6 weeks, read-only).
+- **💬 Discuss** — Tana-style meeting prep. While working, tag anything you want to raise with someone: `TODO ask about budget [[Jane]] #discuss`. Before the meeting, open Discuss and type `Jane` — every open task mentioning her is listed (💬 #discuss ones first). Tick what to cover → **Create meeting note** adds a `Meeting with [[Jane]] #meeting` block to **today's journal page** with the topics on top as block references, so checking one off during the meeting updates the original task everywhere.
+- **📧 Email → Task** — two ways:
   - **Gmail auto-import**: label any email **`logseq`** in Gmail and it appears here as a TODO on your **"Email Inbox"** page — with sender, date, a snippet, and an **📧 Gmail ↗** button on the card that opens the original email. Syncs automatically every time you open the board (one-time setup below). The label flips to `logseq/added` so nothing imports twice.
   - **Paste manually**: paste subject/sender/body, choose To Do or **Waiting**.
   - Either way, add subtasks the Logseq way: indent lines under the task (`TODO chase them next week`, etc.).
 
-## Install (~2 minutes, no coding)
-From the Marketplace (easiest): in Logseq, ⋯ (top-right) → Plugins → Marketplace → search Orbitals → Install.
+## Install
 
-1. In Logseq: **⋯ (top-right) → Settings → Advanced → turn ON "Developer mode"**.
-2. **⋯ → Plugins → Load unpacked plugin**.
-3. Select this folder. Done — the ◉ Orbitals button appears in the toolbar.
-4. (Optional) Move this folder somewhere permanent first (e.g. `Documents/logseq-plugins/`), because Logseq loads it from wherever it lives. If you move it later, just remove and re-load the plugin.
+**From the Marketplace (easiest):** in Logseq, **⋯ (top-right) → Plugins → Marketplace** → search **Orbitals** → Install.
+
+**Manually (~2 minutes, no coding):**
+
+1. Download the latest `logseq-orbitals-*.zip` from the [Releases page](https://github.com/yfhuang7/logseq-orbitals/releases) and unzip it somewhere permanent (e.g. `Documents/logseq-plugins/logseq-orbitals/`) — Logseq loads the plugin from wherever this folder lives.
+2. In Logseq: **⋯ (top-right) → Settings → Advanced → turn ON "Developer mode"**.
+3. **⋯ → Plugins → Load unpacked plugin** → select the unzipped folder.
+4. Done — the ◉ Orbitals button appears in the toolbar. (If you move the folder later, just remove and re-load the plugin.)
 
 Also available from the command palette: `Ctrl/Cmd-Shift-P → "Orbitals: open"`. The panel follows Logseq's light/dark theme. Close with ✕, Esc, or clicking outside.
 
@@ -63,9 +66,14 @@ From then on: label an email `logseq` → open the board → it's a task. ("Anyo
 
 ## Notes & limits
 
-- Works on desktop Logseq.
+- Works on desktop Logseq (plugins aren't supported in the mobile app).
 - Uses your normal markers, so it plays nicely with Logseq's own queries, repeated tasks, and the journal.
+- TODOs inside **templates** are ignored (any page containing a `template::` block, or named "templates", is treated as boilerplate). Tip: keep templates on their own pages, since exclusion is per page.
+- The Table shows **leaf pages only**: an empty intermediate level like `proposal/CIROH` is hidden when deeper pages such as `proposal/CIROH/FY24` exist (unless the intermediate page has its own tasks).
 - If you use the NOW/LATER workflow, those markers appear in the Doing/To Do lanes; moving a card writes TODO/DOING/WAITING/DONE.
-- The Done column shows the 5 most recent to stay fast on big graphs.
+- The Done column shows the 5 most recent to stay tidy and fast on big graphs.
 - Requires internet on first launch after Logseq restarts (the plugin library loads from a CDN). Ask Claude to bundle it offline if that ever bothers you.
 
+## Changing it
+
+The whole plugin is one file, `index.html`. Open a Claude/Cowork session on this folder and describe what you want — e.g. "add a CANCELED lane" or "show the [#A] priority on cards".
